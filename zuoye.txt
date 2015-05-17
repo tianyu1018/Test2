@@ -1,0 +1,328 @@
+通讯录管理系统
+
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+typedef struct{
+     char name[20];
+ char phone[15];
+ char email[40];
+ char work[40];
+ char addr[40];
+// int fenlei;
+}msg;
+msg input_msg()
+{
+ msg temp;
+     printf("name:");
+ scanf("%s",temp.name);
+ printf("phone:");
+ scanf("%s",temp.phone);
+ printf("email:");
+ scanf("%s",temp.email);
+ printf("work:");
+ scanf("%s",temp.work);
+ printf("addr:");
+ scanf("%s",temp.addr);
+// while(!(temp.fenlei>=1||temp.fenlei<=5))
+// {
+ //printf("fenlei(input a int,1-family,2-workmate,3-classmate,4-friends,5-other):");
+// scanf("%d",&temp.fenlei);
+ //}
+ return temp;
+}
+void add()
+{
+ FILE *write;
+     msg cur=input_msg();
+ int fenlei;
+
+ printf("输入分类（这个人放哪个分类）(input a int,1-family,2-workmate,3-classmate,4-friends,5-other):");
+ scanf("%d",&fenlei);
+
+ switch(fenlei)
+ {
+    case 1:write=fopen("txl/family.txt","a");break;
+case 2:write=fopen("txl/workmate.txt","a");break;
+case 3:write=fopen("txl/classmate.txt","a");break;
+case 4:write=fopen("txl/friends.txt","a");break;
+case 5:write=fopen("txl/other.txt","a");break;
+ }
+ if(!write)
+ printf("file open failed\n");
+ fprintf(write,"%20s%15s%40s%40s%40s",cur.name,cur.phone,cur.email,cur.work,cur.addr);
+ fclose(write);
+}
+int delet()
+{
+     char name[20];
+ int fenlei;
+ msg cur;
+ msg* all;
+ int file_len=0;
+ int check;
+ FILE* read;
+ FILE* write;
+ int i,j;
+
+ printf("输入分类（这个人在哪个分类）:");
+ scanf("%d",&fenlei);
+ printf("input the name you want to delete:");
+ scanf("%s",name);
+  switch(fenlei)
+ {
+    case 1:read=fopen("txl/family.txt","r");break;
+case 2:read=fopen("txl/workmate.txt","r");break;
+case 3:read=fopen("txl/classmate.txt","r");break;
+case 4:read=fopen("txl/friends.txt","r");break;
+case 5:read=fopen("txl/other.txt","r");break;
+ }
+ if(!read)
+ printf("file open failed\n");
+
+ while(!feof(read))
+{
+   fscanf(read,"%s%s%s%s%s",cur.name,cur.phone,cur.email,cur.work,cur.addr);
+   file_len++;
+}
+ check=file_len;
+ //file_len--;
+
+ all=(msg*)malloc(file_len*sizeof(msg));
+ rewind(read);
+ for(i=0;i<file_len;i++)
+ {
+     fscanf(read,"%s%s%s%s%s",all[i].name,all[i].phone,all[i].email,all[i].work,all[i].addr);
+ }
+ fclose(read);
+
+ for(i=0;i<file_len;i++)
+ {
+    if(!strcmp(all[i].name,name))
+{
+for(j=i;j<file_len-1;j++)
+all[j]=all[j+1];
+file_len--;
+break;
+}
+ }
+ if(check==file_len)
+ {
+     printf("this man is not exit\n");
+ return 0;
+ }
+
+switch(fenlei)
+ {
+    case 1:write=fopen("txl/family.txt","w");break;
+case 2:write=fopen("txl/workmate.txt","w");break;
+case 3:write=fopen("txl/classmate.txt","w");break;
+case 4:write=fopen("txl/friends.txt","w");break;
+case 5:write=fopen("txl/other.txt","w");break;
+ }
+ if(!write)
+ printf("file open failed2\n");
+ for(i=0;i<file_len;i++)
+ {
+     fprintf(write,"%20s%15s%40s%40s%40s",all[i].name,all[i].phone,all[i].email,all[i].work,all[i].addr);
+ }
+ fclose(write);
+
+     return 1;
+}
+int change()
+{
+     char name[20];
+ int fenlei;
+ msg cur;
+ msg* all;
+ int file_len=0;
+ int check=0;
+ FILE* read;
+ FILE* write;
+ int i,j;
+
+ printf("输入分类（这个人在哪个分类）:");
+ scanf("%d",&fenlei);
+ printf("input the name you want to change:");
+ scanf("%s",name);
+  switch(fenlei)
+ {
+    case 1:read=fopen("txl/family.txt","r");break;
+case 2:read=fopen("txl/workmate.txt","r");break;
+case 3:read=fopen("txl/classmate.txt","r");break;
+case 4:read=fopen("txl/friends.txt","r");break;
+case 5:read=fopen("txl/other.txt","r");break;
+ }
+ if(!read)
+ printf("file open failed\n");
+
+   while(!feof(read))
+{
+   fscanf(read,"%s%s%s%s%s",cur.name,cur.phone,cur.email,cur.work,cur.addr);
+   file_len++;
+}
+
+     all=(msg*)malloc(file_len*sizeof(msg));
+ rewind(read);
+ for(i=0;i<file_len;i++)
+ {
+     fscanf(read,"%s%s%s%s%s",all[i].name,all[i].phone,all[i].email,all[i].work,all[i].addr);
+ }
+ fclose(read);
+
+   	 for(i=0;i<file_len;i++)
+ {
+    if(!strcmp(all[i].name,name))
+{
+check=1;
+break;
+}
+ }
+ if(check==0)
+ {
+    printf("the man is not exit\n");
+return 0;
+ }
+
+     cur=input_msg();
+ all[i]=cur;
+
+   switch(fenlei)
+ {
+    case 1:write=fopen("txl/family.txt","w");break;
+case 2:write=fopen("txl/workmate.txt","w");break;
+case 3:write=fopen("txl/classmate.txt","w");break;
+case 4:write=fopen("txl/friends.txt","w");break;
+case 5:write=fopen("txl/other.txt","w");break;
+ }
+ if(!write)
+ printf("file open failed2\n");
+ for(i=0;i<file_len;i++)
+ {
+     fprintf(write,"%20s%15s%40s%40s%40s",all[i].name,all[i].phone,all[i].email,all[i].work,all[i].addr);
+ }
+ fclose(write);
+ return 1;
+}
+void lookfor()
+{
+     char name[20];
+ int fenlei;
+ msg cur;
+ msg* all;
+ int file_len=0;
+ int check=0;
+ FILE* read;
+ //FILE* write;
+ int i;
+ int way;
+
+     printf("输入分类（这个人在哪个分类）:");
+ scanf("%d",&fenlei);
+ //printf("input the name you want to change:");
+ //scanf("%s",name);
+  switch(fenlei)
+ {
+    case 1:read=fopen("txl/family.txt","r");break;
+case 2:read=fopen("txl/workmate.txt","r");break;
+case 3:read=fopen("txl/classmate.txt","r");break;
+case 4:read=fopen("txl/friends.txt","r");break;
+case 5:read=fopen("txl/other.txt","r");break;
+ }
+ if(!read)
+ printf("file open failed\n");
+
+ while(!feof(read))
+{
+   fscanf(read,"%s%s%s%s%s",cur.name,cur.phone,cur.email,cur.work,cur.addr);
+   file_len++;
+}
+
+     all=(msg*)malloc(file_len*sizeof(msg));
+ rewind(read);
+ for(i=0;i<file_len;i++)
+ {
+     fscanf(read,"%s%s%s%s%s",all[i].name,all[i].phone,all[i].email,all[i].work,all[i].addr);
+ }
+ fclose(read);
+     
+ printf("输入查询方式(1,name   2,phone)：");
+ scanf("%d",&way);
+
+ if(way==1)
+ {
+     printf("输入你想查询的姓名：");
+ scanf("%s",name);
+
+  for(i=0;i<file_len;i++)
+  {
+         if(!strcmp(all[i].name,name))
+ {
+    check=1;
+    break;
+ }
+  }
+      if(check==0)
+  {
+         printf("the man is not exit\n");
+  }
+  else
+  {
+     printf("------------------found-----------------------\n");
+ printf("%s\n",all[i].name);
+ printf("%s\n",all[i].phone);
+ printf("%s\n",all[i].email);
+ printf("%s\n",all[i].work);
+ printf("%s\n",all[i].addr);
+printf("-----------------------------------------------\n");
+  }
+ }
+ if(way==2)
+ {
+      printf("输入你想查询的电话号码：");
+  scanf("%s",name);
+           for(i=0;i<file_len;i++)
+  {
+         if(!strcmp(all[i].phone,name))
+ {
+    check=1;
+    break;
+ }
+  }
+      if(check==0)
+  {
+         printf("the man is not exit\n");
+  }
+  else
+  {
+     printf("------------------found-----------------------\n");
+ printf("%s\n",all[i].name);
+ printf("%s\n",all[i].phone);
+ printf("%s\n",all[i].email);
+ printf("%s\n",all[i].work);
+ printf("%s\n",all[i].addr);
+printf("-----------------------------------------------\n");
+  }
+ }
+}
+void main()
+{
+    int cmd;
+printf("输入命令：\n1，增加记录\n2，删除记录\n3，修改记录\n4，查询记录\n0，退出\n");
+scanf("%d",&cmd);
+   while(cmd!=0)
+   {
+switch(cmd)
+{
+   case 1:add();break;
+   case 2:delet();break;
+   case 3:change();break;
+   case 4:lookfor();break;
+       default:printf("bad cammond\n");break;
+}
+printf("输入命令：\n1，增加记录\n2，删除记录\n3，修改记录\n4，查询记录\n0，退出\n");
+scanf("%d",&cmd);
+   }
+}
+
